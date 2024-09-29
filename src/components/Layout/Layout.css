@@ -1,0 +1,53 @@
+/* Общий стиль для всего приложения */
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Стили для шапки */
+  .header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+  }
+  
+  .header nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header nav li {
+    margin-right: 15px;
+  }
+  
+  .header nav a,
+  .header nav button {
+    color: #fff;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .header nav a:hover,
+  .header nav button:hover {
+    text-decoration: underline;
+  }
+  
+  /* Стили для основного контента */
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  /* Стили для подвала */
+  .footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 10px;
+  }
+  
