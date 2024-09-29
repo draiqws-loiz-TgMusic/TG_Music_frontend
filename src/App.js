@@ -1,22 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import MusicList from './components/MusicList';
+import MusicUpload from './components/MusicUpload';
+import MusicPlayer from './components/MusicPlayer';
 
 function App() {
-  const [data, setData] = useState(null);
+    const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    // Отправляем запрос на FastAPI сервер
-    fetch('http://localhost:8000/api/data')
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+    const handleLoginSuccess = () => {
+        setLoggedIn(true);
+    };
 
-  return (
-    <div className="App">
-      <h1>Music Service Frontend</h1>
-      {data ? <p>{data.message}</p> : <p>Loading...</p>}
-    </div>
-  );
+    return (
+        <Router>
+            <div>
+                <h1>Music Streaming App</h1>
+                <Routes>
+                    {!loggedIn && (
+                        <>
+                            <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+                            <Route path="/register" element={<Register />} />
+                        </>
+                    )}
+                    {loggedIn && (
+                        <>
+                            <Route path="/music" element={<MusicList genre="hip-hop" />} />
+                            <Route path="/upload" element={<MusicUpload />} />
+                            <Route path="/player" element={<MusicPlayer trackUrl="/path_to_audio.mp3" />} />
+                        </>
+                    )}
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
