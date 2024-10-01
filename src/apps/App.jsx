@@ -1,45 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { first_try } from '../shared/api';
-
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {RegistrationPage} from '../pages/RegistationPage'
+import {AuthenticationPage} from '../pages/AuthenticationPage'
+import {ProfilePage} from '../pages/ProfilePage/'
 
 const App = () => {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    // Функция для запроса данных и обновления состояния
-    const fetchData = async () => {
-        try {
-            const result = await first_try();
-            setData(result);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    if (loading) {
-        return (
-            <div>Загрузка...</div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div>Ошибка: {error}</div>
-        );  
-    }
-
     return (
-        <div>
-            <h1>Результат:</h1>
-            {data ? <p>{data.message}</p> : <p>Нет данных</p>}
-        </div>
+        <Router>
+            <Routes>
+                {/* Домашняя страница с регистрацией */}
+                <Route path="/" element={<RegistrationPage/>} />
+
+                {/* Другие страницы */}
+                <Route path="/login" element={<AuthenticationPage/>} />
+
+                <Route path="/dashboard" element={<ProfilePage/>} />
+            </Routes>
+        </Router>
     );
 };
 

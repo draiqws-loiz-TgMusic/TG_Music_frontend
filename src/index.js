@@ -12,8 +12,6 @@ const root = ReactDOM.createRoot(rootElement);
 // Рендерим приложение
 root.render(
     <React.StrictMode>
-        <App />
-        <RegistrationForm />
-        <AuthenticationPage />
+        <App/>
     </React.StrictMode>
 );
