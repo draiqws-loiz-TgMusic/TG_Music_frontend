@@ -5,46 +5,35 @@ import { useNavigate } from 'react-router-dom';
 const RegistrationForm = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-
-    const [loading, setLoading] = useState(false);  // Состояние для индикации загрузки
-    const [error, setError] = useState(null);  // Состояние для хранения ошибок
-    const [isPending, startTransition] = useTransition();
     const userData = {login: login, password: password};
+
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);  
+    const [error, setError] = useState(null); 
+    const [isPending, startTransition] = useTransition();
 
     const navigate = useNavigate();
 
     const [isRegistered, setIsRegistered] = useState(false);
     
     const handleSubmit = async (e) => {
-        e.preventDefault(); //чтобы страница не перегружалась
-        setLoading(true);  // Устанавливаем загрузку
-        setError(null);    // Сбрасываем ошибку
+        e.preventDefault(); 
+        setLoading(true); 
+        setError(null);   
+        setMessage('');
 
         try {
-            startTransition(async () => {
-                const data = await RegisterUser(userData);  // Используем функцию для регистрации
-                setMessage(data.status);
-                setIsRegistered(true);
-            });
-        } catch (error) {
-            setMessage(error.message); // Показываем сообщение об ошибке
-        } finally {
-            setLoading(false);  // Отключаем индикацию загрузки после завершения запроса
-        }
+            const data = await RegisterUser(userData); 
+            setMessage(data.status);
+            setIsRegistered(true);
+        } 
+        catch (error) {setMessage(error.message); setError(error)} 
+        finally {setLoading(false);}
     };
 
-    const handleLoginRedirect = () => {
-        startTransition(() => {
-            navigate('/login');
-        });
-    };
+    const handleLoginRedirect = () => { startTransition(() => { navigate('/login'); }); };
 
-    if (loading) {
-        return (
-            <div>Загрузка...</div>
-        );
-    }
+    if (loading) { return ( <div>Загрузка...</div> ); }
     return (
         <div>
             <h2>Registration</h2>
@@ -55,6 +44,7 @@ const RegistrationForm = () => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit}>  {/*После события сработает функция*/}
+                        
                         <div>
                             <label>Login:</label> {/*Будет внутри поля написано*/}
                             <input
@@ -64,18 +54,28 @@ const RegistrationForm = () => {
                                 required //Обязательно для заполнения
                             /> 
                         </div>
+
                         <div>
                             <label>Password:</label>
-                            <input
+                            <input 
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                         </div>
-                    <button type="submit">Register</button>  
-                    {message && <p>{message}</p>} {/* Событие полсе нажаатия на кнопку Button  */}
+
+                        <button type="submit">Register</button>  
+                        {message && <p>{message}</p>} {/* Событие полсе нажаатия на кнопку Button  */}
+
+                        <div style={{ marginTop: '20px' }}>
+                            <p>Вы уже зарегистрированы?</p>
+                            <button onClick={handleLoginRedirect}>
+                                Войдите
+                            </button>
+                        </div>
                     </form>
+                    
                 )}
         </div>
     );

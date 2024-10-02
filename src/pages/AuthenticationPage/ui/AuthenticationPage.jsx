@@ -18,31 +18,26 @@ const LoginPage = () => {
     const handleSubmit = async (e) => { // Функция для отправки данных формы на сервер
         e.preventDefault();
         setLoading(true);
+        setError(null);
         setMessage('');  // Сбрасываем предыдущее сообщение
 
         try {
-            // Оборачиваем асинхронную операцию в startTransition
+            const data = await LoginUser(userData);
+            localStorage.setItem('token', data.token);
+            setMessage('Login successful')
             startTransition(async () => {
-                const data = await LoginUser(userData);  // Используем функцию из api.js
-                localStorage.setItem('token', data.token);  // Сохраняем токен в localStorage
-                setMessage('Login successful!');
                 navigate('/dashboard');  // Переход на защищённую страницу после успешного входа
             });
-        } catch (error) {
-            setMessage(`Error: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
+        } 
+        catch (error) { setMessage(`Error: ${error.message}`); } 
+        finally { setLoading(false); }
     };
 
     const handleRegistrationRedirect = () => {
-        navigate('/');
+        startTransition(async () => {navigate('/');});
     };
 
-    // Если идет загрузка или переход, показываем индикатор загрузки
-    if (loading || isPending) {
-        return <div>Загрузка...</div>;
-    }
+    if (loading || isPending) { return <div>Загрузка...</div>; }
 
     return (
         <div>
