@@ -8,6 +8,7 @@ const MusicPage = () => {
     const [loading, setLoading] = useState(false);  
     const [error, setError] = useState(null);
     const [currentSong, setCurrentSong] = useState(null);  // Для хранения текущей песни для воспроизведения
+    const [playMusic, setPlayMusic] = useState([])
 
     const handleSubmit = async (e) => {
         e.preventDefault();  // Предотвращаем перезагрузку страницы
@@ -46,7 +47,7 @@ const MusicPage = () => {
                     onChange={(e) => setGenre(e.target.value)}  // Обновляем состояние при вводе жанра
                     required
                 />
-                <button type="submit" disabled={loading}>
+                <button type="submit" disabled={loading} onChange={() => setCurrentSong('')}>
                     {loading ? 'Загрузка...' : 'Найти'}
                 </button>
             </form>
@@ -64,15 +65,22 @@ const MusicPage = () => {
                         {musicList.map((song, index) => (
                             <li key={index}>
                                 {/* song[0] - название, song[1] - автор, song[2] - жанр, song[4] - ссылка на песню */}
-                                <strong>Название:</strong> {song[0]} | 
-                                <strong>Автор:</strong> {song[1]} | 
-                                <strong>Жанр:</strong> {song[2]}
+                                <strong>Название:</strong> {song[1]} | 
+                                <strong>Автор:</strong> {song[2]} | 
+                                <strong>Жанр:</strong> {song[3]}
                                 <br />
                                 {/* Добавляем кнопку для проигрывания песни */}
-                                <button onClick={() => playSong(song[4])}>
+                                {currentSong && (
+                                    <h style={{ margin: '20px' }} >Сначала выключите песню</h>
+                                )}
+                                <button style={{ margin: '20px' }} onClick={
+                                    () => {
+                                        playSong(song[4]); 
+                                        setPlayMusic([0, song[1], song[2]])
+                                    }}>
                                     Включить песню
                                 </button>
-                                <button onClick={() => window.open(song[4], '_blank')}>
+                                <button style={{ margin: '20px' }} onClick={() => window.open(song[4], '_blank')}>
                                     Скачать песню
                                 </button>
                             </li>
@@ -86,11 +94,12 @@ const MusicPage = () => {
             {/* Элемент для воспроизведения аудио */}
             {currentSong && (
                 <div>
-                    <h3>Сейчас играет:</h3>
+                    <h3>Сейчас играет:  {playMusic[1]} Автор {playMusic[2]}</h3>
                     <audio controls>
                         <source src={currentSong} type="audio/mpeg" />
                         Your browser does not support the audio element.
                     </audio>
+                    <button onClick={() => setCurrentSong('')}> Выключить </button>
                 </div>
             )}
         </>
