@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
-import { MusicGenre } from '../../../shared/api';  // Импортируем функцию из api.js
-
+import { MusicGenre } from '../../../shared/api';  
 const MusicPage = () => {
-    const [genre, setGenre] = useState('');  // Состояние для жанра
-    const [musicList, setMusicList] = useState([]);  // Состояние для списка музыки
+    const [genre, setGenre] = useState('');  
+    const [musicList, setMusicList] = useState([]); 
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);  
     const [error, setError] = useState(null);
-    const [currentSong, setCurrentSong] = useState(null);  // Для хранения текущей песни для воспроизведения
+    const [currentSong, setCurrentSong] = useState(null);  
     const [playMusic, setPlayMusic] = useState([])
 
     const handleSubmit = async (e) => {
-        e.preventDefault();  // Предотвращаем перезагрузку страницы
+        e.preventDefault();  
         setLoading(true); 
         setError(null);   
         setMessage('');
 
         try {
-            const data = await MusicGenre(genre);  // Запрос на получение музыки по жанру
-            setMusicList(data);  // Сохраняем список музыки в состоянии
+            const data = await MusicGenre(genre); 
+            setMusicList(data); 
             setMessage('Музыка найдена');
         } 
         catch (error) {
             setError(error.message);
-            setMusicList([]);  // Очищаем список музыки при ошибке
+            setMusicList([]);  
         } 
         finally {
             setLoading(false);
@@ -31,7 +30,7 @@ const MusicPage = () => {
     };
 
     const playSong = (songUrl) => {
-        setCurrentSong(songUrl);  // Устанавливаем URL текущей песни для проигрывания
+        setCurrentSong(songUrl); 
     };
 
     return (
@@ -44,7 +43,7 @@ const MusicPage = () => {
                     type="text"
                     id="genre"
                     value={genre}
-                    onChange={(e) => setGenre(e.target.value)}  // Обновляем состояние при вводе жанра
+                    onChange={(e) => setGenre(e.target.value)} 
                     required
                 />
                 <button type="submit" disabled={loading} onChange={() => setCurrentSong('')}>
@@ -52,11 +51,8 @@ const MusicPage = () => {
                 </button>
             </form>
 
-            {/* Отображаем ошибки, если есть */}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {/* Отображаем сообщение */}
-            {message && <p>{message}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Отображаем ошибки, если есть */}
+            {message && <p>{message}</p>} {/* Отображаем сообщение */}
 
             {/* Отображаем список музыки */}
             <div>
@@ -69,6 +65,8 @@ const MusicPage = () => {
                                 <strong>Автор:</strong> {song[2]} | 
                                 <strong>Жанр:</strong> {song[3]}
                                 <br />
+
+
                                 {/* Добавляем кнопку для проигрывания песни */}
                                 {currentSong && (
                                     <h style={{ margin: '20px' }} >Сначала выключите песню</h>
@@ -83,6 +81,8 @@ const MusicPage = () => {
                                 <button style={{ margin: '20px' }} onClick={() => window.open(song[4], '_blank')}>
                                     Скачать песню
                                 </button>
+
+                                
                             </li>
                         ))}
                     </ul>
