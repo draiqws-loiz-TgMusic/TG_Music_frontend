@@ -1,13 +1,5 @@
 const API_URL = "http://localhost:8000"; 
 
-export const first_try = async () => {
-    const response = await fetch(`${API_URL}/s`);  // используем полный URL
-    if (!response.ok) { // Обрабатываем ответ сервера
-        throw new Error("Ошибка при запросе данных");
-    }
-    return response.json();
-};
-
 export async function RegisterUser(userData) {
     try {
         const response = await fetch(
@@ -46,3 +38,44 @@ export async function LoginUser(userData) {
         throw new Error(error.message);
     }
 }
+export async function MusicGenre(genre) {
+    try {
+        const response = await fetch(
+            `${API_URL}/get-music-by-genre/?genre=${encodeURIComponent(genre)}`, 
+            {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(),
+            }
+        );
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Error get music by genre');
+        }
+        return await response.json();
+    } 
+    catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getAllMusic () {
+    try {
+        const response = await fetch(
+            `${API_URL}/get-music-all/`, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(),
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Error get all music');
+        }
+        return await response.json();
+    } 
+    catch (error) {
+        throw new Error(error.message);
+    }
+};
+

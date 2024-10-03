@@ -1,4 +1,4 @@
-// AuthenticationPage.jsx
+//import AuthenticationPage.css
 import React, { useState, useTransition } from 'react';
 import { LoginUser } from '../../../shared/api';  // Импортируем функцию из api.js
 import { useNavigate } from 'react-router-dom';
@@ -6,14 +6,17 @@ import { useNavigate } from 'react-router-dom';
 const LoginPage = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [isPending, startTransition] = useTransition();  // Используем useTransition
-    const navigate = useNavigate();
-
-    const [loading, setLoading] = useState(false);  // Состояние для индикации загрузки
-    const [error, setError] = useState(null);  // Состояние для хранения ошибок
-
     const userData = {login: login, password: password};
+
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false); 
+    const [error, setError] = useState(null); 
+    const [isPending, startTransition] = useTransition();  // Используем useTransition
+    
+    const navigate = useNavigate();
+    const handleRegistrationRedirect = () => {
+        startTransition(async () => {navigate('/');});
+    };
 
     const handleSubmit = async (e) => { // Функция для отправки данных формы на сервер
         e.preventDefault();
@@ -24,20 +27,23 @@ const LoginPage = () => {
         try {
             const data = await LoginUser(userData);
             localStorage.setItem('token', data.token);
+            localStorage.setItem('login', login)
             setMessage('Login successful')
             startTransition(async () => {
                 navigate('/dashboard');  // Переход на защищённую страницу после успешного входа
             });
         } 
-        catch (error) { setMessage(`Error: ${error.message}`); } 
-        finally { setLoading(false); }
+        catch (error) {
+            setMessage(`Error: ${error.message}`); 
+        } 
+        finally {
+            setLoading(false);
+        }
     };
 
-    const handleRegistrationRedirect = () => {
-        startTransition(async () => {navigate('/');});
-    };
-
-    if (loading || isPending) { return <div>Загрузка...</div>; }
+    if (loading || isPending) {
+        return <div>Загрузка...</div>; 
+    }
 
     return (
         <div>
@@ -65,7 +71,9 @@ const LoginPage = () => {
                     {loading || isPending ? 'Logging in...' : 'Login'}
                 </button>
             </form>
+
             {message && <p>{message}</p>} {/* Отображаем сообщение об ошибке или успешном входе */}
+
             <div style={{ marginTop: '20px' }}>
                 <p>Вы ещё не зарегистрированы?</p>
                 <button onClick={handleRegistrationRedirect}>

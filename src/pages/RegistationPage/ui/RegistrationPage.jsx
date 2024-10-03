@@ -13,10 +13,11 @@ const RegistrationForm = () => {
     const [isPending, startTransition] = useTransition();
 
     const navigate = useNavigate();
-
     const [isRegistered, setIsRegistered] = useState(false);
-    
+    const handleLoginRedirect = () => { startTransition(() => { navigate('/login'); }); };
+
     const handleSubmit = async (e) => {
+
         e.preventDefault(); 
         setLoading(true); 
         setError(null);   
@@ -27,22 +28,30 @@ const RegistrationForm = () => {
             setMessage(data.status);
             setIsRegistered(true);
         } 
-        catch (error) {setMessage(error.message); setError(error)} 
-        finally {setLoading(false);}
+        catch (error) {
+            setMessage(error.message);
+        } 
+        finally {
+            setLoading(false);
+        }
     };
 
-    const handleLoginRedirect = () => { startTransition(() => { navigate('/login'); }); };
+    if (loading) {
+        return ( <div>Загрузка...</div> ); 
+    }
 
-    if (loading) { return ( <div>Загрузка...</div> ); }
     return (
         <div>
             <h2>Registration</h2>
-                {isRegistered ? (
+                {isRegistered ? 
+                (
                     <div>
                         <p>Вы успешно зарегистрировались!</p>
                         <button onClick={handleLoginRedirect}>Войти</button>
                     </div>
-                ) : (
+                ) 
+                : 
+                (
                     <form onSubmit={handleSubmit}>  {/*После события сработает функция*/}
                         
                         <div>
@@ -65,18 +74,19 @@ const RegistrationForm = () => {
                             />
                         </div>
 
-                        <button type="submit">Register</button>  
-                        {message && <p>{message}</p>} {/* Событие полсе нажаатия на кнопку Button  */}
+                        <button type="submit" >
+                            Register 
+                        </button> 
+                        {message && <p>{message}</p>}  {/*Если message не пусто показывает*/}
 
                         <div style={{ marginTop: '20px' }}>
                             <p>Вы уже зарегистрированы?</p>
-                            <button onClick={handleLoginRedirect}>
-                                Войдите
-                            </button>
+                            <button onClick={handleLoginRedirect}> Войдите </button>
                         </div>
                     </form>
                     
-                )}
+                )
+                }
         </div>
     );
 };
